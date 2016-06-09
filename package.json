@@ -1,0 +1,56 @@
+{
+  "name": "PlayerBase",
+  "version": "0.0.0",
+  "description": "A NodeJS gamification app with which you can track user scores, levels, point etc.",
+  "scripts": {
+    "start": "node build/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/n0m0r3pa1n/playerbase.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/n0m0r3pa1n/playerbase/issues"
+  },
+  "homepage": "http://www.nmp90.com",
+  "dependencies": {
+    "babel-plugin-transform-es2015-block-scoped-functions": "^6.8.0",
+    "boom": "^3.2.1",
+    "co": "^4.6.0",
+    "hapi": "^13.4.0",
+    "hapi-auth-jwt2": "^7.0.0",
+    "joi": "^8.1.0",
+    "jsonwebtoken": "^7.0.0",
+    "lodash": "^4.12.0",
+    "mongodb": "^2.1.19",
+    "mongoose": "^4.4.17"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.8.0",
+    "babel-core": "^6.8.0",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.8.0",
+    "babel-plugin-transform-es2015-block-scoping": "^6.8.0",
+    "babel-plugin-transform-es2015-classes": "^6.8.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.8.0",
+    "babel-plugin-transform-es2015-for-of": "^6.8.0",
+    "babel-plugin-transform-es2015-function-name": "^6.8.0",
+    "babel-plugin-transform-es2015-literals": "^6.8.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.8.0",
+    "babel-plugin-transform-es2015-object-super": "^6.8.0",
+    "babel-plugin-transform-es2015-parameters": "^6.8.0",
+    "babel-plugin-transform-es2015-spread": "^6.8.0",
+    "babel-plugin-transform-es2015-sticky-regex": "^6.8.0",
+    "babel-plugin-transform-es2015-template-literals": "^6.8.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "chai": "^3.5.0",
+    "co-mocha": "^1.1.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-util": "^3.0.7",
+    "mocha": "^2.4.5",
+    "mocha-mongoose": "^1.2.0",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0"
+  }
+}
