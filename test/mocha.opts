@@ -1,0 +1,5 @@
+--require test/dependencies.js
+--require co-mocha
+--recursive
+--reporter spec
+--timeout 8000

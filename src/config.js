@@ -6,4 +6,5 @@ global.co = require('co')
 global.Mongoose = require('mongoose')
 global.Schema = Mongoose.Schema
 
-export const PRIVATE_AUTH_KEY = "tourmeetbackend112#?!";
+export const PRIVATE_AUTH_KEY = "playerbase112#?!";
+export const INTERVAL_DAY = 60 * 60 * 24;

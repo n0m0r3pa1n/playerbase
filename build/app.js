@@ -1,23 +1,24 @@
 'use strict';
 
-const Hapi = require('hapi');
-const co = require('co');
-const Mongoose = require('mongoose');
-const routes = require('./routes').routes;
+var _config = require('./config');
 
-import { PRIVATE_AUTH_KEY } from './config';
-import { validate } from './services/authentication';
+var _authentication = require('./services/authentication');
+
+var Hapi = require('hapi');
+var co = require('co');
+var Mongoose = require('mongoose');
+var routes = require('./routes').routes;
 
 var dbURI = process.env.MONGOLAB_URI || 'mongodb://localhost/playerbase';
 Mongoose.connect(dbURI);
 
-const server = new Hapi.Server();
+var server = new Hapi.Server();
 server.connection({ port: 3000 });
 
 server.register(require("hapi-auth-jwt2"), function (err) {
     server.auth.strategy("jwt", "jwt", {
-        key: PRIVATE_AUTH_KEY,
-        validateFunc: validate,
+        key: _config.PRIVATE_AUTH_KEY,
+        validateFunc: _authentication.validate,
         verifyOptions: {
             ignoreExpiration: false,
             algorithms: ["HS256"]
@@ -32,7 +33,7 @@ routes.forEach(function (route) {
 });
 server.route(routes);
 
-server.start(err => {
+server.start(function (err) {
 
     if (err) {
         throw err;
