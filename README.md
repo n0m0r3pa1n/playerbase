@@ -35,4 +35,12 @@ The user model keeps the unique id for the user and the level he is currently at
 * Total progress - % 
 * Prestige level - the level you can achieve after you reach the maximum numbers
 
+## Participate
+
+I will be happy to work with anyone on this project. Either by pull requests or just write me at: gmirchev90@gmail.com. At the moment I am looking for people
+ who can join in:
+  * Making the basic API calls
+  * Write tests for API calls
+  * Discuss and write next functionality of the app
+
 
