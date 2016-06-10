@@ -1,6 +1,6 @@
-// import { userRoutes } from './routes/users_routes'
+import { userRoutes } from './routes/user'
 
 let routes = []
-// routes = routes.concat(userRoutes)
+routes = routes.concat(userRoutes)
 
 module.exports.routes = routes

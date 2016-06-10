@@ -6,7 +6,6 @@ var _authentication = require('./services/authentication');
 
 var Hapi = require('hapi');
 var co = require('co');
-var Mongoose = require('mongoose');
 var routes = require('./routes').routes;
 
 var dbURI = process.env.MONGOLAB_URI || 'mongodb://localhost/playerbase';

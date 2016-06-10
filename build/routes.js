@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-// import { userRoutes } from './routes/users_routes'
+var _user = require('./routes/user');
 
 var routes = [];
-// routes = routes.concat(userRoutes)
+routes = routes.concat(_user.userRoutes);
 
 module.exports.routes = routes;

@@ -2,7 +2,6 @@
 
 const Hapi = require('hapi');
 const co = require('co');
-const Mongoose = require('mongoose');
 const routes = require('./routes').routes
 
 import { PRIVATE_AUTH_KEY } from './config'
