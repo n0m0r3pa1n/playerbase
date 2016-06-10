@@ -1,4 +1,4 @@
-import User from '../models/user'
+import { User } from '../models/'
 import { generateToken } from './authentication'
 
 export function createUser(name, email) {

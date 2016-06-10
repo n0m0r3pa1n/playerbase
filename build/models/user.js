@@ -29,4 +29,6 @@ var UserSchema = exports.UserSchema = new Schema({
     email: { type: String, index: true, unique: true }
 });
 
-var User = exports.User = Mongoose.model("User", UserSchema);
+var User = Mongoose.model("User", UserSchema);
+
+exports.default = User;

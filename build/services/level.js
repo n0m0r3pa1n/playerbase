@@ -6,16 +6,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.createUser = createUser;
 exports.findUserById = findUserById;
 
-var _user = require('../models/user');
-
-var _user2 = _interopRequireDefault(_user);
+var _models = require('../models/');
 
 var _authentication = require('./authentication');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function createUser(name, email) {
-    return _user2.default.findOneOrCreate({ email: email }, { name, email }).then(function (user) {
+    return _models.User.findOneOrCreate({ email: email }, { name, email }).then(function (user) {
         user = user.toObject();
         user.token = (0, _authentication.generateToken)(user._id);
 
@@ -24,5 +20,5 @@ function createUser(name, email) {
 }
 
 function findUserById(id) {
-    return _user2.default.findOne({ _id: id });
+    return _models.User.findOne({ _id: id });
 }

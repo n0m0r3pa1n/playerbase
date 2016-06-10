@@ -23,9 +23,9 @@ The level model holds information like:
 * To total - end of the points the user can get for the current level
 * Icon
 
-### User
+### Player
 
-The user model keeps the unique id for the user and the level he is currently at:
+The player model keeps the unique id for the user and the level he is currently at:
 
 * Identifier
 * Level - ref. to {Level}
