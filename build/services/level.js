@@ -3,22 +3,27 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.createUser = createUser;
-exports.findUserById = findUserById;
+exports.createLevel = createLevel;
+exports.getLevels = getLevels;
 
-var _models = require('../models/');
+var _level = require('../models/level');
 
-var _authentication = require('./authentication');
+var _level2 = _interopRequireDefault(_level);
 
-function createUser(name, email) {
-    return _models.User.findOneOrCreate({ email: email }, { name, email }).then(function (user) {
-        user = user.toObject();
-        user.token = (0, _authentication.generateToken)(user._id);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-        return user;
+function createLevel(value, maximum_points, status, description, from_total, to_total, icon) {
+    return _level2.default.create({
+        value,
+        maximum_points,
+        status,
+        description,
+        from_total,
+        to_total,
+        icon
     });
 }
 
-function findUserById(id) {
-    return _models.User.findOne({ _id: id });
+function getLevels() {
+    return _level2.default.find({});
 }

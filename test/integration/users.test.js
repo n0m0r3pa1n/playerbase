@@ -2,7 +2,7 @@ describe('Users tests', function() {
     var user = {
         name: "Georgi Mirchev",
         email: "gmirchev90@gmail.com"
-    }
+    };
 
     it('should create user with valid params', function* () {
         var response = yield Server.inject({method: "POST", url: "/users", payload: user});

@@ -1,16 +1,17 @@
-import { User } from '../models/'
-import { generateToken } from './authentication'
+import Level from '../models/level'
 
-export function createUser(name, email) {
-    return User.findOneOrCreate({ email: email }, { name, email })
-        .then((user) => {
-            user = user.toObject();
-            user.token = generateToken(user._id);
-
-            return user;
-        })
+export function createLevel(value, maximum_points, status, description, from_total, to_total, icon) {
+    return Level.create({
+        value, 
+        maximum_points, 
+        status, 
+        description, 
+        from_total, 
+        to_total, 
+        icon
+    })
 }
 
-export function findUserById(id) {
-    return User.findOne({ _id: id })
+export function getLevels() {
+    return Level.find({});
 }
