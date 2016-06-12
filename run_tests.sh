@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-node_modules/mocha/bin/mocha ./test/dependencies.js ./test/setup/ ./test/integration/levels.test.js
+node_modules/mocha/bin/mocha ./test/dependencies.js ./test/setup/ ./test/integration/players.test.js

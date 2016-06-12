@@ -4,7 +4,6 @@ var _user = require('./routes/user');
 
 var _level = require('./routes/level');
 
-var routes = [];
-routes = routes.concat(_user.userRoutes, _level.levelRoutes);
+var _player = require('./routes/player');
 
-module.exports.routes = routes;
+module.exports.routes = [].concat(_user.userRoutes, _level.levelRoutes, _player.playerRoutes);;

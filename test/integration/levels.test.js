@@ -1,13 +1,13 @@
 var AuthHelper = require("../helpers/auth")
-describe('Levels tests', function() {
+describe('Levels tests', function () {
 
     var level = {
         value: 5,
-        maximum_points: 100,
+        maximumPoints: 100,
         status: "Dinosaur",
         description: "You are a very old TRex!",
-        from_total: 0,
-        to_total: 100,
+        fromTotal: 0,
+        toTotal: 100,
         icon: "/dinosaur.png"
     };
 
@@ -21,25 +21,25 @@ describe('Levels tests', function() {
             }
         };
 
-        var response = yield Server.inject(opts)
+        var response = yield Server.inject(opts);
         return response
     }
 
 
-    it('should create level', function* (){
-        var user = (yield AuthHelper.createUser("etst", "test@ttest.com")).result
+    it('should create level', function*() {
+        var user = (yield AuthHelper.createUser("etst", "test@ttest.com")).result;
         var response = yield createLevel(user.token);
         var levelResp = response.result;
         expect(levelResp.value).to.eq(level.value);
-        expect(levelResp.maximum_points).to.eq(level.maximum_points);
+        expect(levelResp.maximumPoints).to.eq(level.maximumPoints);
         expect(levelResp.status).to.eq(level.status);
-        expect(levelResp.to_total).to.eq(level.to_total);
-        expect(levelResp.from_total).to.eq(level.from_total);
+        expect(levelResp.toTotal).to.eq(level.toTotal);
+        expect(levelResp.fromTotal).to.eq(level.fromTotal);
         expect(levelResp.icon).to.eq(level.icon);
         expect(levelResp.description).to.eq(level.description);
     });
 
-    it('should return the list of available levels', function* (){
+    it('should return the list of available levels', function*() {
         var user = (yield AuthHelper.createUser("etst", "test@ttest.com")).result
         yield createLevel(user.token)
         var opts = {
@@ -47,7 +47,7 @@ describe('Levels tests', function() {
             url: "/levels"
         };
 
-        response = yield Server.inject(opts);
+        var response = yield Server.inject(opts);
         expect(response.statusCode).to.eq(200)
         expect(response.result.length).to.eq(1)
         expect(response.result[0].value).to.eq(level.value)

@@ -26,24 +26,24 @@ var levelRoutes = exports.levelRoutes = [{
     handler: function handler(req, reply) {
         var _req$payload = req.payload;
         var value = _req$payload.value;
-        var maximum_points = _req$payload.maximum_points;
+        var maximumPoints = _req$payload.maximumPoints;
         var status = _req$payload.status;
         var description = _req$payload.description;
-        var from_total = _req$payload.from_total;
-        var to_total = _req$payload.to_total;
+        var fromTotal = _req$payload.fromTotal;
+        var toTotal = _req$payload.toTotal;
         var icon = _req$payload.icon;
 
-        reply(LevelService.createLevel(value, maximum_points, status, description, from_total, to_total, icon));
+        reply(LevelService.createLevel(value, maximumPoints, status, description, fromTotal, toTotal, icon));
     },
     config: {
         validate: {
             payload: {
                 value: Joi.number().required(),
-                maximum_points: Joi.number().required(),
+                maximumPoints: Joi.number().required(),
                 status: Joi.string().required(),
                 description: Joi.string().required(),
-                from_total: Joi.number().required(),
-                to_total: Joi.number().required(),
+                fromTotal: Joi.number().required(),
+                toTotal: Joi.number().required(),
                 icon: Joi.string().required()
             }
         },

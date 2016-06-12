@@ -1,11 +1,11 @@
 export const LevelSchema = new Schema(
     {
-        value: { type: Number, required: true },
-        maximum_points: { type: Number, required: true },
+        value: { type: Number, required: true , unique: true},
+        maximumPoints: { type: Number, required: true },
         status: String,
         description: String,
-        from_total: { type: Number, required: true },
-        to_total: { type: Number, required: true },
+        fromTotal: { type: Number, required: true },
+        toTotal: { type: Number, required: true },
         icon: String
     }
 );

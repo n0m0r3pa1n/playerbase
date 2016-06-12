@@ -1,17 +1,21 @@
 import Level from '../models/level'
 
-export function createLevel(value, maximum_points, status, description, from_total, to_total, icon) {
+export function createLevel(value, maximumPoints, status, description, fromTotal, toTotal, icon) {
     return Level.create({
         value, 
-        maximum_points, 
+        maximumPoints,
         status, 
         description, 
-        from_total, 
-        to_total, 
+        fromTotal,
+        toTotal,
         icon
     })
 }
 
 export function getLevels() {
     return Level.find({});
+}
+
+export function findLevelByValue(value) {
+    return Level.findOne({ value })
 }

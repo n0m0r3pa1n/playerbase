@@ -1,10 +1,16 @@
 global.Joi = require("joi");
 global.Boom = require("boom");
 global._ = require("lodash");
-global.co = require('co')
+global.co = require('co');
 
-global.Mongoose = require('mongoose')
-global.Schema = Mongoose.Schema
+global.Mongoose = require('mongoose');
+global.Schema = Mongoose.Schema;
+
+
+import ExtendableError from './errors/extendable_error';
+global.ExtendableError = ExtendableError;
+import ValidationError from './errors/validation_error'
+global.ValidationError = ValidationError;
 
 export const PRIVATE_AUTH_KEY = "playerbase112#?!";
 export const INTERVAL_DAY = 60 * 60 * 24;

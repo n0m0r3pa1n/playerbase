@@ -46,7 +46,7 @@ describe('Users tests', function() {
     it("should not create user twice with the same email", function* () {
         var user = {
             name: "Georgi Mirchev",
-            email: "gmirchev90@gmail.com",
+            email: "gmirchev90@gmail.com"
         };
 
         var response = yield Server.inject({ method: "POST", url: "/users", payload: user })

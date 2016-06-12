@@ -15,18 +15,18 @@ export const levelRoutes = [
         method: "POST",
         path: "/levels",
         handler: (req,reply) => {
-            const { value, maximum_points, status, description, from_total, to_total, icon } = req.payload
-            reply(LevelService.createLevel(value, maximum_points, status, description, from_total, to_total, icon))
+            const { value, maximumPoints, status, description, fromTotal, toTotal, icon } = req.payload
+            reply(LevelService.createLevel(value, maximumPoints, status, description, fromTotal, toTotal, icon))
         },
         config: {
             validate: {
                 payload: {
                     value: Joi.number().required(),
-                    maximum_points: Joi.number().required(),
+                    maximumPoints: Joi.number().required(),
                     status: Joi.string().required(),
                     description: Joi.string().required(),
-                    from_total: Joi.number().required(),
-                    to_total: Joi.number().required(),
+                    fromTotal: Joi.number().required(),
+                    toTotal: Joi.number().required(),
                     icon: Joi.string().required()
                 }
             },

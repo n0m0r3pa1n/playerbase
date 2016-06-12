@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createLevel = createLevel;
 exports.getLevels = getLevels;
+exports.findLevelByValue = findLevelByValue;
 
 var _level = require('../models/level');
 
@@ -12,18 +13,22 @@ var _level2 = _interopRequireDefault(_level);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function createLevel(value, maximum_points, status, description, from_total, to_total, icon) {
+function createLevel(value, maximumPoints, status, description, fromTotal, toTotal, icon) {
     return _level2.default.create({
         value,
-        maximum_points,
+        maximumPoints,
         status,
         description,
-        from_total,
-        to_total,
+        fromTotal,
+        toTotal,
         icon
     });
 }
 
 function getLevels() {
     return _level2.default.find({});
+}
+
+function findLevelByValue(value) {
+    return _level2.default.findOne({ value });
 }

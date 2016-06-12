@@ -1,7 +1,5 @@
 import { userRoutes } from './routes/user'
 import { levelRoutes } from './routes/level'
+import { playerRoutes } from './routes/player'
 
-let routes = [];
-routes = routes.concat(userRoutes, levelRoutes);
-
-module.exports.routes = routes;
+module.exports.routes = [].concat(userRoutes, levelRoutes, playerRoutes);;
