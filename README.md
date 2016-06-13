@@ -1,4 +1,4 @@
-<img src="./docs/icon.png" />
+<img src="./docs/icon2.png" />
 
 # PlayerBase
 
