@@ -16,7 +16,7 @@ PlayerBase is based on [score.js](http://mulhoon.github.io/score.js/)
 The level model holds information like:
 
 * Value - the integer representation of the level
-* Maximum points for the level
+* Maximum points for the level  
 * Status - it can be something like "bee", "dwarf" etc. based on the user's actions
 * Description
 * From total - indicates the points rage as part of the total points a user can get
