@@ -1,6 +1,6 @@
-# PlayerBase
+<img src="./docs/icon.png" />
 
------
+# PlayerBase
 
 PlayerBase is a simple to use app for extending functionality with easy and intuitive gamification. 
 You can create levels, associate points per level, total points or an image with the level. You can then have a level per user.
