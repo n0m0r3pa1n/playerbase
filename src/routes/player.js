@@ -21,7 +21,7 @@ export const playerRoutes = [
     },
     {
         method: "GET",
-        path: "/players/{identifier}",
+        path: "/players/{id}",
         handler: (req,reply) => {
             reply(PlayerService.getPlayer(req.param.id))
         },
@@ -39,7 +39,12 @@ export const playerRoutes = [
         path: "/players",
         handler: function* (req,reply) {
             const { identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel } = req.payload;
-            reply(yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel))
+            try {
+                var player = yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel);
+                reply(player)
+            } catch (e) {
+                reply(e);
+            }
         },
         config: {
             validate: {
@@ -51,6 +56,51 @@ export const playerRoutes = [
                     totalScore: Joi.number().required(),
                     totalProgress: Joi.number().required(),
                     prestigeLevel: Joi.number().required()
+                }
+            },
+            auth: 'jwt'
+        }
+    },
+    {
+        method: "POST",
+        path: "/players/{id}/points/actions/increase",
+        handler: function* (req,reply) {
+            try {
+                reply(yield PlayerService.increasePoints(req.params.id, req.payload.points));
+            } catch (e) {
+                reply(Boom.badRequest(e.message));
+            }
+        },
+        config: {
+            validate: {
+                params: {
+                    id: Joi.string().required()
+                },
+                payload: {
+                    points: Joi.number().required()
+                }
+            },
+            auth: 'jwt'
+        }
+    },
+    {
+        method: "POST",
+        path: "/players/{id}/points/actions/decrease",
+        handler: function* (req,reply) {
+            try {
+                reply(yield PlayerService.decreasePoints(req.params.id, req.payload.points));
+            } catch (e) {
+                console.log(e);
+                reply(Boom.badRequest(e.message));
+            }
+        },
+        config: {
+            validate: {
+                params: {
+                    id: Joi.string().required()
+                },
+                payload: {
+                    points: Joi.number().required()
                 }
             },
             auth: 'jwt'

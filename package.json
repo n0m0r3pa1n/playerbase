@@ -16,6 +16,7 @@
   "homepage": "http://www.nmp90.com",
   "dependencies": {
     "babel-plugin-transform-es2015-block-scoped-functions": "^6.8.0",
+    "bluebird": "^3.4.0",
     "boom": "^3.2.1",
     "co": "^4.6.0",
     "hapi": "^13.4.0",

@@ -3,6 +3,7 @@ global.Boom = require("boom");
 global._ = require("lodash");
 global.co = require('co');
 
+global.Promise = require('bluebird')
 global.Mongoose = require('mongoose');
 global.Schema = Mongoose.Schema;
 

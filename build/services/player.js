@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getPlayers = getPlayers;
 exports.getPlayer = getPlayer;
+exports.increasePoints = increasePoints;
+exports.decreasePoints = decreasePoints;
 exports.createPlayer = createPlayer;
 
 var _player = require('../models/player');
@@ -25,14 +27,57 @@ function getPlayers() {
         query.sort(sort);
     }
 
-    return query;
+    return Promise.props({
+        totalCount: _player2.default.count({}),
+        items: query
+    }).then(function (_ref) {
+        var totalCount = _ref.totalCount;
+        var items = _ref.items;
+
+        return {
+            items,
+            page,
+            pageSize,
+            totalCount,
+            pageCount: getTotalPages(totalCount, pageSize)
+        };
+    });
+}
+
+function getTotalPages(totalRecordsCount, pageSize) {
+    if (pageSize == 0 || totalRecordsCount == 0) {
+        return 0;
+    }
+
+    return Math.ceil(totalRecordsCount / pageSize);
 }
 
 function getPlayer(id) {
-    return _player2.default.find({ identifier: id });
+    return _player2.default.findOne({ identifier: id });
+}
+
+function* increasePoints(id, points) {
+    // TODO: Magic should happen here
+    var player = yield getPlayer(id);
+    if (player == null) {
+        throw new Error("Player does not exist!");
+    }
+
+    return player;
+}
+
+function* decreasePoints(id, points) {
+    // TODO: Magic should happen here
+    var player = yield getPlayer(id);
+    if (player == null) {
+        throw new Error("Player does not exist!");
+    }
+
+    return player;
 }
 
 function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel) {
+    //TODO: Validate level points and player score are correct
     var level = yield (0, _level.findLevelByValue)(levelValue);
     if (level == null) {
         throw new ValidationError("Level is missing");

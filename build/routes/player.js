@@ -34,7 +34,7 @@ var playerRoutes = exports.playerRoutes = [{
     }
 }, {
     method: "GET",
-    path: "/players/{identifier}",
+    path: "/players/{id}",
     handler: function handler(req, reply) {
         reply(PlayerService.getPlayer(req.param.id));
     },
@@ -59,7 +59,12 @@ var playerRoutes = exports.playerRoutes = [{
         var totalProgress = _req$payload.totalProgress;
         var prestigeLevel = _req$payload.prestigeLevel;
 
-        reply((yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel)));
+        try {
+            var player = yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel);
+            reply(player);
+        } catch (e) {
+            reply(e);
+        }
     },
     config: {
         validate: {
@@ -71,6 +76,49 @@ var playerRoutes = exports.playerRoutes = [{
                 totalScore: Joi.number().required(),
                 totalProgress: Joi.number().required(),
                 prestigeLevel: Joi.number().required()
+            }
+        },
+        auth: 'jwt'
+    }
+}, {
+    method: "POST",
+    path: "/players/{id}/points/actions/increase",
+    handler: function* handler(req, reply) {
+        try {
+            reply((yield PlayerService.increasePoints(req.params.id, req.payload.points)));
+        } catch (e) {
+            reply(Boom.badRequest(e.message));
+        }
+    },
+    config: {
+        validate: {
+            params: {
+                id: Joi.string().required()
+            },
+            payload: {
+                points: Joi.number().required()
+            }
+        },
+        auth: 'jwt'
+    }
+}, {
+    method: "POST",
+    path: "/players/{id}/points/actions/decrease",
+    handler: function* handler(req, reply) {
+        try {
+            reply((yield PlayerService.decreasePoints(req.params.id, req.payload.points)));
+        } catch (e) {
+            console.log(e);
+            reply(Boom.badRequest(e.message));
+        }
+    },
+    config: {
+        validate: {
+            params: {
+                id: Joi.string().required()
+            },
+            payload: {
+                points: Joi.number().required()
             }
         },
         auth: 'jwt'
