@@ -88,13 +88,19 @@ function* recalculateProgress(player) {
     var levelProgress = player.levelScore / player.level.maximumPoints * 100;
     player.levelProgress = Math.round(levelProgress * 100) / 100;
 
-    var totalScore = cache.get("totalScore");
+    var totalScore = undefined;
+    if (process.env.env == "production") {
+        totalScore = cache.get("totalScore");
+    }
+
     if (totalScore == undefined) {
         totalScore = (yield (0, _level.getTotalScore)())[0].totalScore;
         cache.set("totalScore", totalScore);
-
         var HALF_DAY = 1000 * 60 * 60 * 12;
         cache.ttl("totalScore", HALF_DAY);
+    }
+    if (player.totalScore > totalScore) {
+        player.totalScore = totalScore;
     }
 
     player.totalProgress = Math.round(player.totalScore / totalScore * 10000) / 100;

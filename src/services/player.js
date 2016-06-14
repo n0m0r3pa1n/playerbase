@@ -44,8 +44,8 @@ export function* increasePoints(id, points) {
 
     if(player.levelScore > player.level.maximumPoints) {
         const difference = player.levelScore - player.level.maximumPoints;
-        const newLevelValue = player.level.value + 1
-        const newLevel = yield findLevelByValue(newLevelValue)
+        const newLevelValue = player.level.value + 1;
+        const newLevel = yield findLevelByValue(newLevelValue);
         if(newLevel == null) {
             // Reached the last level
             player.levelScore = player.level.maximumPoints;
@@ -65,15 +65,21 @@ function* recalculateProgress(player) {
     let levelProgress = (player.levelScore / player.level.maximumPoints) * 100;
     player.levelProgress = Math.round(levelProgress * 100) / 100;
 
-    let totalScore = cache.get("totalScore");
+    let totalScore = undefined;
+    if (process.env.env == "production") {
+        totalScore = cache.get("totalScore");
+    }
+
     if(totalScore == undefined) {
         totalScore = (yield getTotalScore())[0].totalScore;
         cache.set("totalScore", totalScore);
-
         const HALF_DAY = 1000 * 60 * 60 * 12;
         cache.ttl("totalScore", HALF_DAY);
     }
-
+    if (player.totalScore > totalScore) {
+        player.totalScore = totalScore;
+    }
+    
     player.totalProgress = Math.round((player.totalScore / totalScore) * 10000) / 100;
 }
 
