@@ -1,13 +1,14 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.createLevel = createLevel;
 exports.getLevels = getLevels;
+exports.getTotalScore = getTotalScore;
 exports.findLevelByValue = findLevelByValue;
 
-var _level = require('../models/level');
+var _level = require("../models/level");
 
 var _level2 = _interopRequireDefault(_level);
 
@@ -27,6 +28,10 @@ function createLevel(value, maximumPoints, status, description, fromTotal, toTot
 
 function getLevels() {
     return _level2.default.find({});
+}
+
+function getTotalScore() {
+    return _level2.default.aggregate([{ $group: { _id: null, totalScore: { $sum: "$maximumPoints" } } }]).exec();
 }
 
 function findLevelByValue(value) {

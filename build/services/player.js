@@ -52,18 +52,52 @@ function getTotalPages(totalRecordsCount, pageSize) {
     return Math.ceil(totalRecordsCount / pageSize);
 }
 
-function getPlayer(id) {
-    return _player2.default.findOne({ identifier: id });
+function getPlayer(identifier) {
+    return _player2.default.findOne({ identifier });
 }
 
 function* increasePoints(id, points) {
-    // TODO: Magic should happen here
     var player = yield getPlayer(id);
     if (player == null) {
         throw new Error("Player does not exist!");
     }
 
-    return player;
+    player.levelScore += points;
+    player.totalScore += points;
+
+    if (player.levelScore > player.level.maximumPoints) {
+        var difference = player.levelScore - player.level.maximumPoints;
+        var newLevelValue = player.level.value + 1;
+        var newLevel = yield (0, _level.findLevelByValue)(newLevelValue);
+        if (newLevel == null) {
+            // Reached the last level
+            player.levelScore = player.level.maximumPoints;
+        } else {
+            // Increased level
+            player.level = newLevel;
+            player.levelScore = difference;
+        }
+    }
+
+    yield recalculateProgress(player);
+
+    return yield player.save();
+}
+
+function* recalculateProgress(player) {
+    var levelProgress = player.levelScore / player.level.maximumPoints * 100;
+    player.levelProgress = Math.round(levelProgress * 100) / 100;
+
+    var totalScore = cache.get("totalScore");
+    if (totalScore == undefined) {
+        totalScore = (yield (0, _level.getTotalScore)())[0].totalScore;
+        cache.set("totalScore", totalScore);
+
+        var HALF_DAY = 1000 * 60 * 60 * 12;
+        cache.ttl("totalScore", HALF_DAY);
+    }
+
+    player.totalProgress = Math.round(player.totalScore / totalScore * 10000) / 100;
 }
 
 function* decreasePoints(id, points) {

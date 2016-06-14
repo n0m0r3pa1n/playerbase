@@ -1,5 +1,5 @@
 import Player from '../models/player'
-import { findLevelByValue } from  '../services/level'
+import { findLevelByValue, getTotalScore } from  '../services/level'
 
 export function getPlayers(page = 1, pageSize = 50, sort) {
     var query = Player.find({}).limit(pageSize).skip((page - 1) * pageSize)
@@ -29,18 +29,52 @@ function getTotalPages(totalRecordsCount, pageSize) {
     return Math.ceil(totalRecordsCount / pageSize)
 }
 
-export function getPlayer(id) {
-    return Player.findOne({ identifier: id });
+export function getPlayer(identifier) {
+    return Player.findOne({ identifier });
 }
 
 export function* increasePoints(id, points) {
-    // TODO: Magic should happen here
     let player = yield getPlayer(id);
     if(player == null) {
         throw new Error("Player does not exist!");
     }
 
-    return player;
+    player.levelScore += points;
+    player.totalScore += points;
+
+    if(player.levelScore > player.level.maximumPoints) {
+        const difference = player.levelScore - player.level.maximumPoints;
+        const newLevelValue = player.level.value + 1
+        const newLevel = yield findLevelByValue(newLevelValue)
+        if(newLevel == null) {
+            // Reached the last level
+            player.levelScore = player.level.maximumPoints;
+        } else {
+            // Increased level
+            player.level = newLevel;
+            player.levelScore = difference;
+        }
+    }
+
+    yield recalculateProgress(player)
+
+    return yield player.save();
+}
+
+function* recalculateProgress(player) {
+    let levelProgress = (player.levelScore / player.level.maximumPoints) * 100;
+    player.levelProgress = Math.round(levelProgress * 100) / 100;
+
+    let totalScore = cache.get("totalScore");
+    if(totalScore == undefined) {
+        totalScore = (yield getTotalScore())[0].totalScore;
+        cache.set("totalScore", totalScore);
+
+        const HALF_DAY = 1000 * 60 * 60 * 12;
+        cache.ttl("totalScore", HALF_DAY);
+    }
+
+    player.totalProgress = Math.round((player.totalScore / totalScore) * 10000) / 100;
 }
 
 export function* decreasePoints(id, points) {

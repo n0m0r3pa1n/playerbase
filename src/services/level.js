@@ -16,6 +16,10 @@ export function getLevels() {
     return Level.find({});
 }
 
+export function getTotalScore() {
+    return Level.aggregate([{$group: { _id: null, totalScore: { $sum: "$maximumPoints" } }}]).exec()
+}
+
 export function findLevelByValue(value) {
     return Level.findOne({ value })
 }

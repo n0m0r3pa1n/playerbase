@@ -1,3 +1,7 @@
+const NodeCache = require( "node-cache" );
+const myCache = new NodeCache();
+global.cache = myCache;
+
 global.Joi = require("joi");
 global.Boom = require("boom");
 global._ = require("lodash");
@@ -5,6 +9,7 @@ global.co = require('co');
 
 global.Promise = require('bluebird')
 global.Mongoose = require('mongoose');
+Mongoose.Promise = require('bluebird');
 global.Schema = Mongoose.Schema;
 
 

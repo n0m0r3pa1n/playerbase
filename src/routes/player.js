@@ -90,7 +90,6 @@ export const playerRoutes = [
             try {
                 reply(yield PlayerService.decreasePoints(req.params.id, req.payload.points));
             } catch (e) {
-                console.log(e);
                 reply(Boom.badRequest(e.message));
             }
         },

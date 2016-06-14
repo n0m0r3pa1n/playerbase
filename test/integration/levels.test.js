@@ -1,13 +1,14 @@
 var AuthHelper = require("../helpers/auth")
+require('./setup/cleardb')
 describe('Levels tests', function () {
 
     var level = {
         value: 5,
         maximumPoints: 100,
-        status: "Dinosaur",
-        description: "You are a very old TRex!",
         fromTotal: 0,
         toTotal: 100,
+        status: "Dinosaur",
+        description: "You are a very old TRex!",
         icon: "/dinosaur.png"
     };
 

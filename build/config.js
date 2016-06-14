@@ -15,6 +15,10 @@ var _validation_error2 = _interopRequireDefault(_validation_error);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var NodeCache = require("node-cache");
+var myCache = new NodeCache();
+global.cache = myCache;
+
 global.Joi = require("joi");
 global.Boom = require("boom");
 global._ = require("lodash");
@@ -22,6 +26,7 @@ global.co = require('co');
 
 global.Promise = require('bluebird');
 global.Mongoose = require('mongoose');
+Mongoose.Promise = require('bluebird');
 global.Schema = Mongoose.Schema;
 
 global.ExtendableError = _extendable_error2.default;
