@@ -1,5 +1,5 @@
 import Player from '../models/player'
-import { findLevelByValue, getTotalScore } from  '../services/level'
+import { findLevelWithTotal, getTotalScore, findLevelByValue, getLastLevel } from  '../services/level'
 
 export function getPlayers(page = 1, pageSize = 50, sort) {
     var query = Player.find({}).limit(pageSize).skip((page - 1) * pageSize)
@@ -43,14 +43,15 @@ export function* increasePoints(id, points) {
     player.totalScore += points;
 
     if(player.levelScore > player.level.maximumPoints) {
-        const difference = player.levelScore - player.level.maximumPoints;
-        const newLevelValue = player.level.value + 1;
-        const newLevel = yield findLevelByValue(newLevelValue);
+        let newLevel = yield findLevelWithTotal(player.totalScore);
         if(newLevel == null) {
             // Reached the last level
-            player.levelScore = player.level.maximumPoints;
+            newLevel = yield getLastLevel();
+            player.level = newLevel;
+            player.levelScore = newLevel.maximumPoints;
         } else {
             // Increased level
+            const difference = player.totalScore - newLevel.fromTotal;
             player.level = newLevel;
             player.levelScore = difference;
         }
@@ -65,6 +66,15 @@ function* recalculateProgress(player) {
     let levelProgress = (player.levelScore / player.level.maximumPoints) * 100;
     player.levelProgress = Math.round(levelProgress * 100) / 100;
 
+    let totalScore = yield getTotalScoreForLevels();
+    if (player.totalScore > totalScore) {
+        player.totalScore = totalScore;
+    }
+    
+    player.totalProgress = Math.round((player.totalScore / totalScore) * 10000) / 100;
+}
+
+function* getTotalScoreForLevels() {
     let totalScore = undefined;
     if (process.env.env == "production") {
         totalScore = cache.get("totalScore");
@@ -76,30 +86,43 @@ function* recalculateProgress(player) {
         const HALF_DAY = 1000 * 60 * 60 * 12;
         cache.ttl("totalScore", HALF_DAY);
     }
-    if (player.totalScore > totalScore) {
-        player.totalScore = totalScore;
-    }
-    
-    player.totalProgress = Math.round((player.totalScore / totalScore) * 10000) / 100;
+
+    return totalScore;
 }
 
 export function* decreasePoints(id, points) {
-    // TODO: Magic should happen here
     let player = yield getPlayer(id);
     if(player == null) {
         throw new Error("Player does not exist!");
     }
 
-    return player;
+    player.levelScore -= points;
+    player.totalScore -= points;
+
+    if(player.levelScore < player.level.maximumPoints) {
+        const difference = player.levelScore - player.level.maximumPoints;
+        const newLevel = yield findLevelWithTotal(player.totalScore);
+        if(newLevel == null) {
+            // Reached the first level
+            player.levelScore = player.level.fromTotal;
+        } else {
+            // Increased level
+            player.level = newLevel;
+            player.levelScore = difference;
+        }
+    }
+
+    yield recalculateProgress(player)
+
+    return yield player.save();
 }
 
-export function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel) {
+export function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress) {
     //TODO: Validate level points and player score are correct
     const level = yield findLevelByValue(levelValue);
     if(level == null) {
         throw new ValidationError("Level is missing");
     }
-
 
     return yield Player.create({
         identifier,
@@ -107,7 +130,6 @@ export function* createPlayer(identifier, levelValue, levelScore, levelProgress,
         levelScore,
         levelProgress,
         totalScore,
-        totalProgress,
-        prestigeLevel
+        totalProgress
     })
 }

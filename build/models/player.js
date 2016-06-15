@@ -13,8 +13,7 @@ var PlayerSchema = exports.PlayerSchema = new Schema({
     levelScore: Number,
     levelProgress: Number,
     totalScore: Number,
-    totalProgress: Number,
-    prestigeLevel: Number
+    totalProgress: Number
 });
 
 var Player = Mongoose.model("Player", PlayerSchema);

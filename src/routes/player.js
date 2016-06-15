@@ -40,7 +40,7 @@ export const playerRoutes = [
         handler: function* (req,reply) {
             const { identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel } = req.payload;
             try {
-                var player = yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel);
+                const player = yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress);
                 reply(player)
             } catch (e) {
                 reply(e);
@@ -54,8 +54,7 @@ export const playerRoutes = [
                     levelScore: Joi.number().required(),
                     levelProgress: Joi.number().required(),
                     totalScore: Joi.number().required(),
-                    totalProgress: Joi.number().required(),
-                    prestigeLevel: Joi.number().required()
+                    totalProgress: Joi.number().required()
                 }
             },
             auth: 'jwt'

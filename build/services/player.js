@@ -66,14 +66,15 @@ function* increasePoints(id, points) {
     player.totalScore += points;
 
     if (player.levelScore > player.level.maximumPoints) {
-        var difference = player.levelScore - player.level.maximumPoints;
-        var newLevelValue = player.level.value + 1;
-        var newLevel = yield (0, _level.findLevelByValue)(newLevelValue);
+        var newLevel = yield (0, _level.findLevelWithTotal)(player.totalScore);
         if (newLevel == null) {
             // Reached the last level
-            player.levelScore = player.level.maximumPoints;
+            newLevel = yield (0, _level.getLastLevel)();
+            player.level = newLevel;
+            player.levelScore = newLevel.maximumPoints;
         } else {
             // Increased level
+            var difference = player.totalScore - newLevel.fromTotal;
             player.level = newLevel;
             player.levelScore = difference;
         }
@@ -88,6 +89,15 @@ function* recalculateProgress(player) {
     var levelProgress = player.levelScore / player.level.maximumPoints * 100;
     player.levelProgress = Math.round(levelProgress * 100) / 100;
 
+    var totalScore = yield getTotalScoreForLevels();
+    if (player.totalScore > totalScore) {
+        player.totalScore = totalScore;
+    }
+
+    player.totalProgress = Math.round(player.totalScore / totalScore * 10000) / 100;
+}
+
+function* getTotalScoreForLevels() {
     var totalScore = undefined;
     if (process.env.env == "production") {
         totalScore = cache.get("totalScore");
@@ -99,24 +109,38 @@ function* recalculateProgress(player) {
         var HALF_DAY = 1000 * 60 * 60 * 12;
         cache.ttl("totalScore", HALF_DAY);
     }
-    if (player.totalScore > totalScore) {
-        player.totalScore = totalScore;
-    }
 
-    player.totalProgress = Math.round(player.totalScore / totalScore * 10000) / 100;
+    return totalScore;
 }
 
 function* decreasePoints(id, points) {
-    // TODO: Magic should happen here
     var player = yield getPlayer(id);
     if (player == null) {
         throw new Error("Player does not exist!");
     }
 
-    return player;
+    player.levelScore -= points;
+    player.totalScore -= points;
+
+    if (player.levelScore < player.level.maximumPoints) {
+        var difference = player.levelScore - player.level.maximumPoints;
+        var newLevel = yield (0, _level.findLevelWithTotal)(player.totalScore);
+        if (newLevel == null) {
+            // Reached the first level
+            player.levelScore = player.level.fromTotal;
+        } else {
+            // Increased level
+            player.level = newLevel;
+            player.levelScore = difference;
+        }
+    }
+
+    yield recalculateProgress(player);
+
+    return yield player.save();
 }
 
-function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel) {
+function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress) {
     //TODO: Validate level points and player score are correct
     var level = yield (0, _level.findLevelByValue)(levelValue);
     if (level == null) {
@@ -129,7 +153,6 @@ function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalS
         levelScore,
         levelProgress,
         totalScore,
-        totalProgress,
-        prestigeLevel
+        totalProgress
     });
 }

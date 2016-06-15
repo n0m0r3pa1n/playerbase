@@ -1,6 +1,6 @@
 require('../setup/cleardb')
 var AuthHelper = require("../helpers/auth")
-describe('Players tests', function () {
+describe('Points tests', function () {
     var level = {
         value: 5,
         fromTotal: 0,
@@ -27,12 +27,11 @@ describe('Players tests', function () {
 
     var player = {
         identifier: "player1",
-        levelValue: 5,
+        levelValue: 1,
         levelScore: 99,
-        levelProgress: 22,
-        totalScore: 213,
-        totalProgress: 123,
-        prestigeLevel: 123
+        levelProgress: 99,
+        totalScore: 99,
+        totalProgress: 99,
     };
 
     function* createPlayer(token, data = player) {

@@ -6,8 +6,7 @@ export const PlayerSchema = new Schema(
         levelScore: Number,
         levelProgress: Number,
         totalScore: Number,
-        totalProgress: Number,
-        prestigeLevel: Number
+        totalProgress: Number
     }
 );
 

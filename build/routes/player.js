@@ -60,7 +60,7 @@ var playerRoutes = exports.playerRoutes = [{
         var prestigeLevel = _req$payload.prestigeLevel;
 
         try {
-            var player = yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel);
+            var player = yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress);
             reply(player);
         } catch (e) {
             reply(e);
@@ -74,8 +74,7 @@ var playerRoutes = exports.playerRoutes = [{
                 levelScore: Joi.number().required(),
                 levelProgress: Joi.number().required(),
                 totalScore: Joi.number().required(),
-                totalProgress: Joi.number().required(),
-                prestigeLevel: Joi.number().required()
+                totalProgress: Joi.number().required()
             }
         },
         auth: 'jwt'

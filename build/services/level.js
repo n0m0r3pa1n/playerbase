@@ -7,6 +7,8 @@ exports.createLevel = createLevel;
 exports.getLevels = getLevels;
 exports.getTotalScore = getTotalScore;
 exports.findLevelByValue = findLevelByValue;
+exports.findLevelWithTotal = findLevelWithTotal;
+exports.getLastLevel = getLastLevel;
 
 var _level = require("../models/level");
 
@@ -36,4 +38,14 @@ function getTotalScore() {
 
 function findLevelByValue(value) {
     return _level2.default.findOne({ value });
+}
+
+function findLevelWithTotal(total) {
+    return _level2.default.findOne({ fromTotal: { $lte: total }, toTotal: { $gte: total } });
+}
+
+function getLastLevel() {
+    return _level2.default.find({}).sort({ fromTotal: -1 }).limit(1).then(function (data) {
+        return data[0];
+    });
 }

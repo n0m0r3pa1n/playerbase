@@ -1,5 +1,4 @@
 var AuthHelper = require("../helpers/auth")
-require('./setup/cleardb')
 describe('Levels tests', function () {
 
     var level = {

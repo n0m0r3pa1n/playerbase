@@ -23,3 +23,13 @@ export function getTotalScore() {
 export function findLevelByValue(value) {
     return Level.findOne({ value })
 }
+
+export function findLevelWithTotal(total) {
+    return Level.findOne({ fromTotal: { $lte: total }, toTotal: { $gte: total } })
+}
+
+export function getLastLevel() {
+    return Level.find({}).sort({fromTotal: -1}).limit(1).then(data => {
+        return data[0];
+    });
+}
