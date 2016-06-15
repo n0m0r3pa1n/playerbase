@@ -33,3 +33,9 @@ export function getLastLevel() {
         return data[0];
     });
 }
+
+export function getFirstLevel() {
+    return Level.find({}).sort({fromTotal: 1}).limit(1).then(data => {
+        return data[0];
+    });
+}

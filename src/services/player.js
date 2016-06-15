@@ -1,5 +1,5 @@
 import Player from '../models/player'
-import { findLevelWithTotal, getTotalScore, findLevelByValue, getLastLevel } from  '../services/level'
+import { findLevelWithTotal, getTotalScore, findLevelByValue, getLastLevel, getFirstLevel } from  '../services/level'
 
 export function getPlayers(page = 1, pageSize = 50, sort) {
     var query = Player.find({}).limit(pageSize).skip((page - 1) * pageSize)
@@ -51,13 +51,13 @@ export function* increasePoints(id, points) {
             player.levelScore = newLevel.maximumPoints;
         } else {
             // Increased level
-            const difference = player.totalScore - newLevel.fromTotal;
+            const newLevelScore = player.totalScore - newLevel.fromTotal;
             player.level = newLevel;
-            player.levelScore = difference;
+            player.levelScore = newLevelScore;
         }
     }
 
-    yield recalculateProgress(player)
+    yield recalculateProgress(player);
 
     return yield player.save();
 }
@@ -69,6 +69,8 @@ function* recalculateProgress(player) {
     let totalScore = yield getTotalScoreForLevels();
     if (player.totalScore > totalScore) {
         player.totalScore = totalScore;
+    } else if(player.totalScore < 1) {
+        player.totalScore = 1;
     }
     
     player.totalProgress = Math.round((player.totalScore / totalScore) * 10000) / 100;
@@ -99,20 +101,22 @@ export function* decreasePoints(id, points) {
     player.levelScore -= points;
     player.totalScore -= points;
 
-    if(player.levelScore < player.level.maximumPoints) {
-        const difference = player.levelScore - player.level.maximumPoints;
-        const newLevel = yield findLevelWithTotal(player.totalScore);
+    if(player.levelScore < player.level.fromTotal) {
+        let newLevel = yield findLevelWithTotal(player.totalScore);
         if(newLevel == null) {
             // Reached the first level
-            player.levelScore = player.level.fromTotal;
-        } else {
-            // Increased level
+            newLevel = yield getFirstLevel();
             player.level = newLevel;
-            player.levelScore = difference;
+            player.levelScore = newLevel.fromTotal;
+        } else {
+            // Lower level
+            const newLevelScore = player.totalScore - newLevel.fromTotal;
+            player.level = newLevel;
+            player.levelScore = newLevelScore;
         }
     }
 
-    yield recalculateProgress(player)
+    yield recalculateProgress(player);
 
     return yield player.save();
 }

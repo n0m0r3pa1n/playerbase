@@ -30,8 +30,7 @@ describe('Players tests', function () {
         levelScore: 99,
         levelProgress: 22,
         totalScore: 213,
-        totalProgress: 123,
-        prestigeLevel: 123
+        totalProgress: 123
     };
 
     function* createPlayer(token, data = player) {

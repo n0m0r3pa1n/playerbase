@@ -95,7 +95,7 @@ var playerRoutes = exports.playerRoutes = [{
                 id: Joi.string().required()
             },
             payload: {
-                points: Joi.number().required()
+                points: Joi.number().min(1).required()
             }
         },
         auth: 'jwt'
@@ -116,7 +116,7 @@ var playerRoutes = exports.playerRoutes = [{
                 id: Joi.string().required()
             },
             payload: {
-                points: Joi.number().required()
+                points: Joi.number().min(1).required()
             }
         },
         auth: 'jwt'

@@ -1,6 +1,6 @@
 require('../setup/cleardb')
 var AuthHelper = require("../helpers/auth")
-describe('Points tests', function () {
+describe('Points increase tests', function () {
     var level = {
         value: 5,
         fromTotal: 0,

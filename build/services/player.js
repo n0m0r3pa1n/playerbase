@@ -74,9 +74,9 @@ function* increasePoints(id, points) {
             player.levelScore = newLevel.maximumPoints;
         } else {
             // Increased level
-            var difference = player.totalScore - newLevel.fromTotal;
+            var newLevelScore = player.totalScore - newLevel.fromTotal;
             player.level = newLevel;
-            player.levelScore = difference;
+            player.levelScore = newLevelScore;
         }
     }
 
@@ -92,6 +92,8 @@ function* recalculateProgress(player) {
     var totalScore = yield getTotalScoreForLevels();
     if (player.totalScore > totalScore) {
         player.totalScore = totalScore;
+    } else if (player.totalScore < 1) {
+        player.totalScore = 1;
     }
 
     player.totalProgress = Math.round(player.totalScore / totalScore * 10000) / 100;
@@ -122,16 +124,18 @@ function* decreasePoints(id, points) {
     player.levelScore -= points;
     player.totalScore -= points;
 
-    if (player.levelScore < player.level.maximumPoints) {
-        var difference = player.levelScore - player.level.maximumPoints;
+    if (player.levelScore < player.level.fromTotal) {
         var newLevel = yield (0, _level.findLevelWithTotal)(player.totalScore);
         if (newLevel == null) {
             // Reached the first level
-            player.levelScore = player.level.fromTotal;
-        } else {
-            // Increased level
+            newLevel = yield (0, _level.getFirstLevel)();
             player.level = newLevel;
-            player.levelScore = difference;
+            player.levelScore = newLevel.fromTotal;
+        } else {
+            // Lower level
+            var newLevelScore = player.totalScore - newLevel.fromTotal;
+            player.level = newLevel;
+            player.levelScore = newLevelScore;
         }
     }
 

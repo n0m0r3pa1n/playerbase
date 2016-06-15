@@ -76,7 +76,7 @@ export const playerRoutes = [
                     id: Joi.string().required()
                 },
                 payload: {
-                    points: Joi.number().required()
+                    points: Joi.number().min(1).required()
                 }
             },
             auth: 'jwt'
@@ -98,7 +98,7 @@ export const playerRoutes = [
                     id: Joi.string().required()
                 },
                 payload: {
-                    points: Joi.number().required()
+                    points: Joi.number().min(1).required()
                 }
             },
             auth: 'jwt'
