@@ -8,11 +8,11 @@ var Hapi = require('hapi');
 var co = require('co');
 var routes = require('./routes').routes;
 
-var dbURI = process.env.MONGOLAB_URI || 'mongodb://localhost/playerbase';
+var dbURI = process.env.MONGOLAB_URI || _config.DB_URI;
 Mongoose.connect(dbURI);
 
 var server = new Hapi.Server();
-server.connection({ port: 3000 });
+server.connection({ port: _config.SERVER_PORT });
 
 server.register(require("hapi-auth-jwt2"), function (err) {
     server.auth.strategy("jwt", "jwt", {

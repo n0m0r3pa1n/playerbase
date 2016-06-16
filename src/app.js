@@ -2,16 +2,16 @@
 
 const Hapi = require('hapi');
 const co = require('co');
-const routes = require('./routes').routes
+const routes = require('./routes').routes;
 
-import { PRIVATE_AUTH_KEY } from './config'
+import { PRIVATE_AUTH_KEY, DB_URI, SERVER_PORT } from './config'
 import { validate } from './services/authentication'
 
-var dbURI = process.env.MONGOLAB_URI || 'mongodb://localhost/playerbase'
-Mongoose.connect(dbURI)
+var dbURI = process.env.MONGOLAB_URI || DB_URI
+Mongoose.connect(dbURI);
 
 const server = new Hapi.Server();
-server.connection({ port: 3000 });
+server.connection({ port: SERVER_PORT });
 
 server.register(require("hapi-auth-jwt2"), function(err) {
     server.auth.strategy("jwt", "jwt", {
@@ -39,4 +39,4 @@ server.start((err) => {
     console.log('Server running at:', server.info.uri);
 });
 
-module.exports.server = server
+module.exports.server = server;
