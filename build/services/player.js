@@ -149,13 +149,20 @@ function* decreasePoints(id, points) {
 }
 
 function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress) {
-    //TODO: Validate level points and player score are correct
     var level = yield (0, _level.findLevelByValue)(levelValue);
     if (level == null) {
         throw new ValidationError("Level is missing!");
     }
 
-    return yield _player2.default.create({
+    if (totalScore < level.fromTotal || totalScore > level.toTotal) {
+        throw new ValidationError("Player totalScore does not fit level fromTotal and toTotal field!");
+    }
+
+    if (levelScore < 0 || levelScore > level.maximumPoints) {
+        throw new ValidationError("Player levelScore does not fit the level required points!");
+    }
+
+    var player = yield _player2.default.create({
         identifier,
         level,
         levelScore,
@@ -163,4 +170,7 @@ function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalS
         totalScore,
         totalProgress
     });
+
+    yield recalculateProgress(player);
+    return player;
 }

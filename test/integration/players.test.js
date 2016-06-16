@@ -28,16 +28,16 @@ describe('Players tests', function () {
         identifier: "player1",
         levelValue: 5,
         levelScore: 99,
-        levelProgress: 22,
-        totalScore: 213,
-        totalProgress: 123
+        levelProgress: 99,
+        totalScore: 99,
+        totalProgress: 99
     };
 
     function* createPlayer(token, data = player) {
         var opts = {
             method: "POST",
             url: "/players",
-            payload: player,
+            payload: data,
             headers: {
                 "Authorization": token
             }
@@ -46,46 +46,97 @@ describe('Players tests', function () {
         return yield Server.inject(opts);
     }
 
-    // it('should create player', function*() {
-    //     var user = (yield AuthHelper.createUser("test", "test@test.com")).result
-    //     var level = (yield createLevel(user.token)).result
-    //
-    //
-    //     var playerResp = (yield createPlayer(user.token)).result;
-    //     expect(playerResp.identifier).to.eq(player.identifier);
-    //     expect(playerResp.levelScore).to.eq(player.levelScore);
-    //     expect(playerResp.levelProgress).to.eq(player.levelProgress);
-    //     expect(playerResp.totalScore).to.eq(player.totalScore);
-    //     expect(playerResp.totalProgress).to.eq(player.totalProgress);
-    //     expect(playerResp.prestigeLevel).to.eq(player.prestigeLevel);
-    //     expect(playerResp.level.value).to.eq(level.value);
-    // });
-    //
-    // it('should get a list of players', function* () {
-    //     var user = (yield AuthHelper.createUser("test", "test@test.com")).result
-    //     var level = (yield createLevel(user.token)).result
-    //     yield createPlayer(user.token)
-    //
-    //     player.identifier = "player2";
-    //     yield createPlayer(user.token)
-    //
-    //     player.identifier = "player3";
-    //     yield createPlayer(user.token)
-    //
-    //     var opts = {
-    //         method: "GET",
-    //         url: "/players?page=2&pageSize=1"
-    //     };
-    //     var response = yield Server.inject(opts);
-    //     var result = response.result;
-    //     expect(result.items.length).to.eq(1);
-    //     expect(result.pageCount).to.eq(3);
-    //     expect(result.totalCount).to.eq(3);
-    //     expect(result.page).to.eq(2);
-    //     expect(result.pageSize).to.eq(1);
-    // });
+    it('should create player', function*() {
+        var user = (yield AuthHelper.createUser("test", "test@test.com")).result;
+        var level = (yield createLevel(user.token)).result;
 
-    it('should sorted list of players by level', function* () {
+
+        var playerResp = (yield createPlayer(user.token)).result;
+        expect(playerResp.identifier).to.eq(player.identifier);
+        expect(playerResp.levelScore).to.eq(player.levelScore);
+        expect(playerResp.levelProgress).to.eq(player.levelProgress);
+        expect(playerResp.totalScore).to.eq(player.totalScore);
+        expect(playerResp.totalProgress).to.eq(player.totalProgress);
+        expect(playerResp.level.value).to.eq(level.value);
+    });
+
+    it('should not create player with levelScore more than allowed for level', function*() {
+        var user = (yield AuthHelper.createUser("test", "test@test.com")).result;
+        const player2 = {
+            identifier: "player1",
+            levelValue: 5,
+            levelScore: 102,
+            levelProgress: 99,
+            totalScore: 200,
+            totalProgress: 99
+        };
+
+        const level2 = {
+            value: 5,
+            fromTotal: 0,
+            toTotal: 100,
+            maximumPoints: 100,
+            status: "Dinosaur",
+            description: "You are a very old TRex!",
+            icon: "/dinosaur.png"
+        };
+
+        yield createLevel(user.token, level2);
+        var playerResp = (yield createPlayer(user.token, player2)).result;
+        expect(playerResp.statusCode).to.eq(400);
+    });
+
+    it('should not create player with totalScore more than allowed for level', function*() {
+        var user = (yield AuthHelper.createUser("test", "test@test.com")).result;
+        const player2 = {
+            identifier: "player1",
+            levelValue: 5,
+            levelScore: 99,
+            levelProgress: 99,
+            totalScore: 102,
+            totalProgress: 99
+        };
+
+        const level2 = {
+            value: 5,
+            fromTotal: 0,
+            toTotal: 100,
+            maximumPoints: 100,
+            status: "Dinosaur",
+            description: "You are a very old TRex!",
+            icon: "/dinosaur.png"
+        };
+
+        yield createLevel(user.token, level2);
+        var playerResp = (yield createPlayer(user.token, player2)).result;
+        expect(playerResp.statusCode).to.eq(400);
+    });
+
+    it('should get a list of players', function* () {
+        var user = (yield AuthHelper.createUser("test", "test@test.com")).result
+        var level = (yield createLevel(user.token)).result
+        yield createPlayer(user.token)
+
+        player.identifier = "player2";
+        yield createPlayer(user.token)
+
+        player.identifier = "player3";
+        yield createPlayer(user.token)
+
+        var opts = {
+            method: "GET",
+            url: "/players?page=2&pageSize=1"
+        };
+        var response = yield Server.inject(opts);
+        var result = response.result;
+        expect(result.items.length).to.eq(1);
+        expect(result.pageCount).to.eq(3);
+        expect(result.totalCount).to.eq(3);
+        expect(result.page).to.eq(2);
+        expect(result.pageSize).to.eq(1);
+    });
+
+    it('should get sorted list of players by level', function* () {
         var user = (yield AuthHelper.createUser("test", "test@test.com")).result;
         yield createLevel(user.token);
         level.value = 4;
@@ -93,6 +144,7 @@ describe('Players tests', function () {
         level.value = 6;
         yield createLevel(user.token);
 
+        player.identifier = "player1";
         yield createPlayer(user.token);
         player.identifier = "player2";
         player.levelValue = 6;
@@ -100,7 +152,7 @@ describe('Players tests', function () {
 
         player.levelValue = 4;
         player.identifier = "player3";
-        var aa = yield createPlayer(user.token);
+        yield createPlayer(user.token);
 
         var opts = {
             method: "GET",

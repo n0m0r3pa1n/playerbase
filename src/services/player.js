@@ -1,9 +1,9 @@
 import Player from '../models/player'
-import { findLevelWithTotal, getTotalScore, findLevelByValue, getLastLevel, getFirstLevel } from  '../services/level'
+import {findLevelWithTotal, getTotalScore, findLevelByValue, getLastLevel, getFirstLevel} from  '../services/level'
 
 export function getPlayers(page = 1, pageSize = 50, sortBy, sortDirection = "asc") {
     var query = Player.find({}).limit(pageSize).skip((page - 1) * pageSize);
-    if(!_.isEmpty(sortBy)) {
+    if (!_.isEmpty(sortBy)) {
         var sortQuery = {
             [sortBy]: sortDirection == "asc" ? 1 : -1
         };
@@ -13,7 +13,7 @@ export function getPlayers(page = 1, pageSize = 50, sortBy, sortDirection = "asc
     return Promise.props({
         totalCount: Player.count({}),
         items: query
-    }).then(function ({ totalCount, items }) {
+    }).then(function ({totalCount, items}) {
         return {
             items,
             page,
@@ -25,7 +25,7 @@ export function getPlayers(page = 1, pageSize = 50, sortBy, sortDirection = "asc
 }
 
 function getTotalPages(totalRecordsCount, pageSize) {
-    if(pageSize == 0 || totalRecordsCount == 0) {
+    if (pageSize == 0 || totalRecordsCount == 0) {
         return 0;
     }
 
@@ -33,21 +33,21 @@ function getTotalPages(totalRecordsCount, pageSize) {
 }
 
 export function getPlayer(identifier) {
-    return Player.findOne({ identifier });
+    return Player.findOne({identifier});
 }
 
 export function* increasePoints(id, points) {
     let player = yield getPlayer(id);
-    if(player == null) {
+    if (player == null) {
         throw new Error("Player does not exist!");
     }
 
     player.levelScore += points;
     player.totalScore += points;
 
-    if(player.levelScore > player.level.maximumPoints) {
+    if (player.levelScore > player.level.maximumPoints) {
         let newLevel = yield findLevelWithTotal(player.totalScore);
-        if(newLevel == null) {
+        if (newLevel == null) {
             // Reached the last level
             newLevel = yield getLastLevel();
             player.level = newLevel;
@@ -72,10 +72,10 @@ function* recalculateProgress(player) {
     let totalScore = yield getTotalScoreForLevels();
     if (player.totalScore > totalScore) {
         player.totalScore = totalScore;
-    } else if(player.totalScore < 1) {
+    } else if (player.totalScore < 1) {
         player.totalScore = 1;
     }
-    
+
     player.totalProgress = Math.round((player.totalScore / totalScore) * 10000) / 100;
 }
 
@@ -85,7 +85,7 @@ function* getTotalScoreForLevels() {
         totalScore = cache.get("totalScore");
     }
 
-    if(totalScore == undefined) {
+    if (totalScore == undefined) {
         totalScore = (yield getTotalScore())[0].totalScore;
         cache.set("totalScore", totalScore);
         const HALF_DAY = 1000 * 60 * 60 * 12;
@@ -97,16 +97,16 @@ function* getTotalScoreForLevels() {
 
 export function* decreasePoints(id, points) {
     let player = yield getPlayer(id);
-    if(player == null) {
+    if (player == null) {
         throw new Error("Player does not exist!");
     }
 
     player.levelScore -= points;
     player.totalScore -= points;
 
-    if(player.levelScore < player.level.fromTotal) {
+    if (player.levelScore < player.level.fromTotal) {
         let newLevel = yield findLevelWithTotal(player.totalScore);
-        if(newLevel == null) {
+        if (newLevel == null) {
             // Reached the first level
             newLevel = yield getFirstLevel();
             player.level = newLevel;
@@ -125,18 +125,28 @@ export function* decreasePoints(id, points) {
 }
 
 export function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress) {
-    //TODO: Validate level points and player score are correct
     const level = yield findLevelByValue(levelValue);
-    if(level == null) {
+    if (level == null) {
         throw new ValidationError("Level is missing!");
     }
 
-    return yield Player.create({
+    if (totalScore < level.fromTotal || totalScore > level.toTotal) {
+        throw new ValidationError("Player totalScore does not fit level fromTotal and toTotal field!");
+    }
+
+    if (levelScore < 0 || levelScore > level.maximumPoints) {
+        throw new ValidationError("Player levelScore does not fit the level required points!")
+    }
+
+    let player = yield Player.create({
         identifier,
         level,
         levelScore,
         levelProgress,
         totalScore,
         totalProgress
-    })
+    });
+
+    yield recalculateProgress(player);
+    return player;
 }
