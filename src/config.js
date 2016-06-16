@@ -1,6 +1,7 @@
 const NodeCache = require( "node-cache" );
 const myCache = new NodeCache();
 global.cache = myCache;
+global.AUTH = 'jwt'
 
 global.Joi = require("joi");
 global.Boom = require("boom");

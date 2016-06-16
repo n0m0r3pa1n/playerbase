@@ -1,10 +1,13 @@
 import Player from '../models/player'
 import { findLevelWithTotal, getTotalScore, findLevelByValue, getLastLevel, getFirstLevel } from  '../services/level'
 
-export function getPlayers(page = 1, pageSize = 50, sort) {
-    var query = Player.find({}).limit(pageSize).skip((page - 1) * pageSize)
-    if(!_.isEmpty(sort)) {
-        query.sort(sort)
+export function getPlayers(page = 1, pageSize = 50, sortBy, sortDirection = "asc") {
+    var query = Player.find({}).limit(pageSize).skip((page - 1) * pageSize);
+    if(!_.isEmpty(sortBy)) {
+        var sortQuery = {
+            [sortBy]: sortDirection == "asc" ? 1 : -1
+        };
+        query.sort(sortQuery)
     }
 
     return Promise.props({
@@ -125,7 +128,7 @@ export function* createPlayer(identifier, levelValue, levelScore, levelProgress,
     //TODO: Validate level points and player score are correct
     const level = yield findLevelByValue(levelValue);
     if(level == null) {
-        throw new ValidationError("Level is missing");
+        throw new ValidationError("Level is missing!");
     }
 
     return yield Player.create({

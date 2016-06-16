@@ -5,15 +5,16 @@ export const playerRoutes = [
         method: "GET",
         path: "/players",
         handler: (req,reply) => {
-            const { page, pageSize, sort } = req.query;
-            reply(PlayerService.getPlayers(page, pageSize, sort))
+            const { page, pageSize, sortBy, sortDirection } = req.query;
+            reply(PlayerService.getPlayers(page, pageSize, sortBy, sortDirection))
         },
         config: {
             validate: {
                 query: {
                     page: Joi.number().optional(),
                     pageSize: Joi.number().optional(),
-                    sort: Joi.string().optional()
+                    sortBy: Joi.string().optional(),
+                    sortDirection: Joi.string().optional()
                 }
             },
             auth: false
@@ -38,12 +39,12 @@ export const playerRoutes = [
         method: "POST",
         path: "/players",
         handler: function* (req,reply) {
-            const { identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress, prestigeLevel } = req.payload;
+            const { identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress } = req.payload;
             try {
                 const player = yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress);
                 reply(player)
             } catch (e) {
-                reply(e);
+                reply(Boom.badRequest(e.message));
             }
         },
         config: {
@@ -57,7 +58,7 @@ export const playerRoutes = [
                     totalProgress: Joi.number().required()
                 }
             },
-            auth: 'jwt'
+            auth: AUTH
         }
     },
     {
@@ -79,7 +80,7 @@ export const playerRoutes = [
                     points: Joi.number().min(1).required()
                 }
             },
-            auth: 'jwt'
+            auth: AUTH
         }
     },
     {
@@ -101,7 +102,7 @@ export const playerRoutes = [
                     points: Joi.number().min(1).required()
                 }
             },
-            auth: 'jwt'
+            auth: AUTH
         }
     }
 ];

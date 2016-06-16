@@ -18,16 +18,18 @@ var playerRoutes = exports.playerRoutes = [{
         var _req$query = req.query;
         var page = _req$query.page;
         var pageSize = _req$query.pageSize;
-        var sort = _req$query.sort;
+        var sortBy = _req$query.sortBy;
+        var sortDirection = _req$query.sortDirection;
 
-        reply(PlayerService.getPlayers(page, pageSize, sort));
+        reply(PlayerService.getPlayers(page, pageSize, sortBy, sortDirection));
     },
     config: {
         validate: {
             query: {
                 page: Joi.number().optional(),
                 pageSize: Joi.number().optional(),
-                sort: Joi.string().optional()
+                sortBy: Joi.string().optional(),
+                sortDirection: Joi.string().optional()
             }
         },
         auth: false
@@ -57,13 +59,12 @@ var playerRoutes = exports.playerRoutes = [{
         var levelProgress = _req$payload.levelProgress;
         var totalScore = _req$payload.totalScore;
         var totalProgress = _req$payload.totalProgress;
-        var prestigeLevel = _req$payload.prestigeLevel;
 
         try {
             var player = yield PlayerService.createPlayer(identifier, levelValue, levelScore, levelProgress, totalScore, totalProgress);
             reply(player);
         } catch (e) {
-            reply(e);
+            reply(Boom.badRequest(e.message));
         }
     },
     config: {
@@ -77,7 +78,7 @@ var playerRoutes = exports.playerRoutes = [{
                 totalProgress: Joi.number().required()
             }
         },
-        auth: 'jwt'
+        auth: AUTH
     }
 }, {
     method: "POST",
@@ -98,7 +99,7 @@ var playerRoutes = exports.playerRoutes = [{
                 points: Joi.number().min(1).required()
             }
         },
-        auth: 'jwt'
+        auth: AUTH
     }
 }, {
     method: "POST",
@@ -119,6 +120,6 @@ var playerRoutes = exports.playerRoutes = [{
                 points: Joi.number().min(1).required()
             }
         },
-        auth: 'jwt'
+        auth: AUTH
     }
 }];

@@ -47,6 +47,6 @@ var levelRoutes = exports.levelRoutes = [{
                 icon: Joi.string().required()
             }
         },
-        auth: 'jwt'
+        auth: AUTH
     }
 }];

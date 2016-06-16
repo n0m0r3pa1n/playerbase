@@ -48,6 +48,6 @@ var userRoutes = exports.userRoutes = [{
                 id: Joi.string().required()
             }
         },
-        auth: "jwt"
+        auth: AUTH
     }
 }];

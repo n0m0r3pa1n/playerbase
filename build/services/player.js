@@ -20,11 +20,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function getPlayers() {
     var page = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
     var pageSize = arguments.length <= 1 || arguments[1] === undefined ? 50 : arguments[1];
-    var sort = arguments[2];
+    var sortBy = arguments[2];
+    var sortDirection = arguments.length <= 3 || arguments[3] === undefined ? "asc" : arguments[3];
 
     var query = _player2.default.find({}).limit(pageSize).skip((page - 1) * pageSize);
-    if (!_.isEmpty(sort)) {
-        query.sort(sort);
+    if (!_.isEmpty(sortBy)) {
+        var sortQuery = {
+            [sortBy]: sortDirection == "asc" ? 1 : -1
+        };
+        query.sort(sortQuery);
     }
 
     return Promise.props({
@@ -148,7 +152,7 @@ function* createPlayer(identifier, levelValue, levelScore, levelProgress, totalS
     //TODO: Validate level points and player score are correct
     var level = yield (0, _level.findLevelByValue)(levelValue);
     if (level == null) {
-        throw new ValidationError("Level is missing");
+        throw new ValidationError("Level is missing!");
     }
 
     return yield _player2.default.create({

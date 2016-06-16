@@ -30,7 +30,7 @@ export const levelRoutes = [
                     icon: Joi.string().required()
                 }
             },
-            auth: 'jwt'
+            auth: AUTH
         }
     }
 ];

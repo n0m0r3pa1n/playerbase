@@ -18,6 +18,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var NodeCache = require("node-cache");
 var myCache = new NodeCache();
 global.cache = myCache;
+global.AUTH = 'jwt';
 
 global.Joi = require("joi");
 global.Boom = require("boom");

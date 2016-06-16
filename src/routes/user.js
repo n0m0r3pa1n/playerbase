@@ -36,7 +36,7 @@ export const userRoutes = [
                     id: Joi.string().required()
                 }
             },
-            auth: "jwt"
+            auth: AUTH
         }
     }
 ];
