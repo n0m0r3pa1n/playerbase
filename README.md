@@ -4,7 +4,7 @@
 
 PlayerBase is a simple to use app which helps you extend your existing functionality with easy and intuitive gamification.
 
-* The idea is based on the look of [score.js](http://mulhoon.github.io/score.js/) *
+Based on the look of [score.js](http://mulhoon.github.io/score.js/)
 
 ## What you can do
 
