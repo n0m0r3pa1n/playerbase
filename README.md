@@ -2,7 +2,7 @@
 
 # PlayerBase
 
-PlayerBase is a simple to use app which helps you extend your existing functidonality with easy and intuitive gamification.
+PlayerBase is a simple to use app which helps you extend your existing functionality with easy and intuitive gamification.
 
 * The idea is based on the look of [score.js](http://mulhoon.github.io/score.js/) *
 
@@ -194,12 +194,12 @@ The player model keeps the unique id for the user and the level he is currently 
 
 This project is written in Javascript (ES6 version) with Babel as a compiler. It uses several libraries:
 
-    1. [HapiJS](http://hapijs.com/) as a main server framework
-    2. [Joi](https://github.com/hapijs/joi) for HapiJS params validation
-    3. [Mongoose](http://mongoosejs.com/) as an ORM over MongoDB
-    4. [Co](https://github.com/tj/co) library for generators so some of the functions need to bie yield-ed
-    5. [Bluebird](http://bluebirdjs.com/) as a promise library
-    6. Others like [mocha](https://mochajs.org/) for tests
+1. [HapiJS](http://hapijs.com/) as a main server framework
+2. [Joi](https://github.com/hapijs/joi) for HapiJS params validation
+3. [Mongoose](http://mongoosejs.com/) as an ORM over MongoDB
+4. [Co](https://github.com/tj/co) library for generators so some of the functions need to bie yield-ed
+5. [Bluebird](http://bluebirdjs.com/) as a promise library
+6. Others like [mocha](https://mochajs.org/) for tests
     
 ## How to run it
 
